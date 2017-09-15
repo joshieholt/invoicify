@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Users</title>
+</head>
+<body>
+{{> common/_navigation}}
+
+<h1>Users</h1>
+
+<form method="post" action="/admin/users">
+	<input type="text" name="username" required placeholder="username">
+  	<br>
+  	<input type="password" name="password" required placeholder="password">
+  	<br>
+  	<input type="text" name="role" required placeholder="ROLE">
+  	<button>Create User</button>
+	<input type="hidden" name="{{ _csrf.parameterName }}" value="{{ _csrf.token }}">
+</form>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#users}}
+      <tr>
+      	<td>{{ username }}</td>
+      	<td>{{#roles}}{{ name }}{{/roles}}</td>
+       </tr>
+    {{/users}}
+  </tbody>  
+</table>
+
+</body>
+</html>
