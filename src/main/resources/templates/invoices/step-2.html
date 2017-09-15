@@ -5,7 +5,9 @@
 <title>Step 2</title>
 </head>
 <body>
+{{> common/_navigation}}
 	<h1>Select Billing Records</h1>
+	<div>{{ errorMessage }}</div>
 <form method="post" action="/invoices/create">
 	<input type="text" name="invoiceNumber" required placeholder="Invoice Number (NaN)">
 <table>

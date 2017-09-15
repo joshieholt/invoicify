@@ -37,5 +37,4 @@ public class BillingRecordControllerTests {
 		assertThat(actual.getViewName()).isEqualTo("billing-records/list");
 		assertThat(actual.getModel().get("records")).isSameAs(records);
 	}
-	
 }

@@ -27,7 +27,7 @@ public class InvoiceController {
     private CompanyRepository companyRepo;
     private BillingRecordRepository recordRepo;
     private InvoiceRepository invoiceRepo;
-    
+
     public InvoiceController(CompanyRepository companyRepo, BillingRecordRepository recordRepo, InvoiceRepository invoiceRepo) {
         this.companyRepo = companyRepo;
         this.recordRepo = recordRepo;
@@ -49,37 +49,47 @@ public class InvoiceController {
         mv.addObject("companies", companyRepo.findAll());
         return mv;
     }
-    
+
     @PostMapping("/new")
     public ModelAndView goToStepTwo(long clientId) {
         ModelAndView mv = new ModelAndView("invoices/step-2");
+        mv.addObject("errorMessage", "");
         mv.addObject("clientId", clientId);
-        mv.addObject("records", recordRepo.findByClientId(clientId));
+        mv.addObject("records", recordRepo.findByClientIdAndLineItemIsNull(clientId));
         return mv;
     }
-    
+
     @PostMapping("create")
-    public String create(Authentication auth, Invoice invoice, String invoiceNumber, long clientId, long[] recordIds) {
-        User creator = (User) auth.getPrincipal();
-        List<BillingRecord> records = recordRepo.findByIdIn(recordIds);
-        long nowish = Calendar.getInstance().getTimeInMillis();
-        Date now = new Date(nowish);
-        
-        List<InvoiceLineItem> items = new ArrayList<InvoiceLineItem>();
-        for (BillingRecord record : records) {
-            InvoiceLineItem lineItem = new InvoiceLineItem();
-            lineItem.setBillingRecord(record);
-            lineItem.setCreatedBy(creator);
-            lineItem.setCreatedOn(now);
-            lineItem.setInvoice(invoice);
-            items.add(lineItem);
+    public ModelAndView create(Authentication auth, Invoice invoice, String invoiceNumber, long clientId, long[] recordIds) {
+        ModelAndView mv = new ModelAndView();
+        if (recordIds != null) {
+            User creator = (User) auth.getPrincipal();
+            List<BillingRecord> records = recordRepo.findByIdIn(recordIds);
+            long nowish = Calendar.getInstance().getTimeInMillis();
+            Date now = new Date(nowish);
+
+            List<InvoiceLineItem> items = new ArrayList<InvoiceLineItem>();
+            for (BillingRecord record : records) {
+                InvoiceLineItem lineItem = new InvoiceLineItem();
+                lineItem.setBillingRecord(record);
+                lineItem.setCreatedBy(creator);
+                lineItem.setCreatedOn(now);
+                lineItem.setInvoice(invoice);
+                items.add(lineItem);
+            }
+            invoice.setCreatedBy(creator);
+            invoice.setCompany(companyRepo.findOne(clientId));
+            invoice.setCreatedOn(now);
+            invoice.setLineItems(items);
+            invoiceRepo.save(invoice);
+            mv.setViewName("redirect:/invoices");
+        } else {
+            mv.addObject("errorMessage", "Please select at least one billing record.");
+            mv.addObject("clientId", clientId);
+            mv.addObject("records", recordRepo.findByClientIdAndLineItemIsNull(clientId));
+            mv.setViewName("invoices/step-2");
         }
-        invoice.setCreatedBy(creator);
-        invoice.setCompany(companyRepo.findOne(clientId));
-        invoice.setCreatedOn(now);
-        invoice.setLineItems(items);
-        invoiceRepo.save(invoice);
-        return "redirect:/invoices";
+        return mv;
     }
 
 }
