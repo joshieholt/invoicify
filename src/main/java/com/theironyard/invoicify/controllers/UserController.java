@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +20,11 @@ import com.theironyard.invoicify.repositories.UserRepository;
 public class UserController {
     
     private UserRepository userRepo;
+    private PasswordEncoder encoder;
     
-    public UserController(UserRepository userRepo) {
+    public UserController(UserRepository userRepo, PasswordEncoder encoder) {
         this.userRepo = userRepo;
+        this.encoder = encoder;
     }
     
     @GetMapping("")
@@ -38,7 +41,7 @@ public class UserController {
         UserRole newRole = new UserRole(role, newUser);
         List<UserRole> roles = new ArrayList<UserRole>();
         newUser.setUsername(user.getUsername());
-        newUser.setPassword(user.getPassword());
+        newUser.setPassword(encoder.encode(user.getPassword()));
         roles.add(newRole);
         newUser.setRoles(roles);
         userRepo.save(newUser);
