@@ -66,7 +66,6 @@ public class UserController {
         ModelAndView mv = new ModelAndView("redirect:/admin/users");
         User theUser = userRepo.findOne(userId);
         List<UserRole> roles = new ArrayList<UserRole>();
-
         if (makeAdmin && !theUser.isAdmin()) {
             UserRole newRole = new UserRole("ADMIN", theUser);
             roles.add(newRole);
