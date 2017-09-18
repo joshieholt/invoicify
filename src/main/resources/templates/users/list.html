@@ -14,27 +14,46 @@
   	<br>
   	<input type="password" name="password" required placeholder="password">
   	<br>
-  	<input type="text" name="role" required placeholder="ROLE">
+  	<!-- <input type="text" name="role" required placeholder="ROLE"> -->
+  	<input type="checkbox" id="makeAdmin" name="makeAdmin">
+  	<label for="makeAdmin">Admin</label>
+  	<input type="checkbox" id="makeAccountant" name="makeAccountant">
+  	<label for="makeAccountant">Accountant</label>
+  	<input type="checkbox" id="makeClerk" name="makeClerk">
+  	<label for="makeClerk">Clerk</label>
+  	<input type="checkbox" id="makeTeacher" name="makeTeacher">
+  	<label for="makeTeacher">Teacher</label>
   	<button>Create User</button>
 	<input type="hidden" name="{{ _csrf.parameterName }}" value="{{ _csrf.token }}">
 </form>
 
+<form method="post" action="/admin/users/roles">
 <table>
   <thead>
     <tr>
       <th>Name</th>
       <th>Role</th>
+      <th>Admin</th>
+      <th>Accountant</th>
+      <th>Clerk</th>
+      <th>Teacher</th>
     </tr>
   </thead>
   <tbody>
     {{#users}}
       <tr>
       	<td>{{ username }}</td>
-      	<td>{{#roles}}{{ name }}{{/roles}}</td>
+      	<td>{{#roles}}{{ name }} {{/roles}}</td>
+      	<td><input type="checkbox" name="makeAdmin"></td>
+      	<td><input type="checkbox" name="makeAccountant"></td>
+      	<td><input type="checkbox" name="makeClerk"></td>
+      	<td><input type="checkbox" name="makeTeacher"></td>
+      	<td><button name="userId" value="{{ id }}">Update</button></td>
        </tr>
     {{/users}}
   </tbody>  
 </table>
-
+<input type="hidden" name="{{ _csrf.parameterName }}" value="{{ _csrf.token }}">
+</form>
 </body>
 </html>

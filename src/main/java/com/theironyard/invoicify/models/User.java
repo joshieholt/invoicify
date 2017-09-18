@@ -109,6 +109,42 @@ public class User implements UserDetails {
 	public void setRoles(List<UserRole> roles) {
 		this.roles = roles;
 	}
+	
+	public boolean isAdmin() {
+	    for (UserRole role : roles) {
+	        if (role.getName().equals("ADMIN")) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+	public boolean isAccountant() {
+	    for (UserRole role : roles) {
+	        if (role.getName().equals("ACCOUNTANT")) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+	public boolean isClerk() {
+	    for (UserRole role : roles) {
+	        if (role.getName().equals("CLERK")) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+	public boolean isTeacher() {
+	    for (UserRole role : roles) {
+	        if (role.getName().equals("TEACHER")) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 
 }
 

@@ -3,7 +3,6 @@ package com.theironyard.invoicify.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,16 +34,57 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ModelAndView create(User user, String role) {
+    public ModelAndView create(User user, boolean makeAdmin, boolean makeAccountant, boolean makeClerk, boolean makeTeacher) {
         ModelAndView mv = new ModelAndView("redirect:/admin/users");
         User newUser = new User();
-        UserRole newRole = new UserRole(role, newUser);
         List<UserRole> roles = new ArrayList<UserRole>();
+        if (makeAdmin) {
+            UserRole newRole = new UserRole("ADMIN", newUser);
+            roles.add(newRole);
+        }
+        if (makeAccountant) {
+            UserRole newRole = new UserRole("ACCOUNTANT", newUser);
+            roles.add(newRole);
+        }
+        if (makeClerk) {
+            UserRole newRole = new UserRole("CLERK", newUser);
+            roles.add(newRole);
+        }
+        if (makeTeacher) {
+            UserRole newRole = new UserRole("TEACHER", newUser);
+            roles.add(newRole);
+        }
         newUser.setUsername(user.getUsername());
         newUser.setPassword(encoder.encode(user.getPassword()));
-        roles.add(newRole);
         newUser.setRoles(roles);
         userRepo.save(newUser);
+        return mv;
+    }
+    
+    @PostMapping("/roles")
+    public ModelAndView updateRoles(long userId, boolean makeAdmin, boolean makeAccountant, boolean makeClerk, boolean makeTeacher) {
+        ModelAndView mv = new ModelAndView("redirect:/admin/users");
+        User theUser = userRepo.findOne(userId);
+        List<UserRole> roles = new ArrayList<UserRole>();
+
+        if (makeAdmin && !theUser.isAdmin()) {
+            UserRole newRole = new UserRole("ADMIN", theUser);
+            roles.add(newRole);
+        }
+        if (makeAccountant && !theUser.isAccountant()) {
+            UserRole newRole = new UserRole("ACCOUNTANT", theUser);
+            roles.add(newRole);
+        }
+        if (makeClerk && !theUser.isClerk()) {
+            UserRole newRole = new UserRole("CLERK", theUser);
+            roles.add(newRole);
+        }
+        if (makeTeacher && !theUser.isTeacher()) {
+            UserRole newRole = new UserRole("TEACHER", theUser);
+            roles.add(newRole);
+        }
+        theUser.setRoles(roles);
+        userRepo.save(theUser);
         return mv;
     }
 }
