@@ -145,6 +145,34 @@ public class User implements UserDetails {
 	    }
 	    return false;
 	}
+        
+        public String getHasAdmin() {
+            if (isAdmin()) {
+                return "checked";
+            }
+            return "";
+        }
+        
+        public String getHasClerk() {
+            if (isClerk()) {
+                return "checked";
+            }
+            return "";
+        }
+        
+        public String getHasTeacher() {
+            if (isTeacher()) {
+                return "checked";
+            }
+            return "";
+        }
+        
+        public String getHasAccountant() {
+            if (isAccountant()) {
+                return "checked";
+            }
+            return "";
+        }
 
 }
 

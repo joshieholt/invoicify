@@ -27,7 +27,6 @@
 	<input type="hidden" name="{{ _csrf.parameterName }}" value="{{ _csrf.token }}">
 </form>
 
-<form method="post" action="/admin/users/roles">
 <table>
   <thead>
     <tr>
@@ -42,18 +41,19 @@
   <tbody>
     {{#users}}
       <tr>
+      	<form method="post" action="/admin/users/roles">
       	<td>{{ username }}</td>
       	<td>{{#roles}}{{ name }} {{/roles}}</td>
-      	<td><input type="checkbox" name="makeAdmin"></td>
-      	<td><input type="checkbox" name="makeAccountant"></td>
-      	<td><input type="checkbox" name="makeClerk"></td>
-      	<td><input type="checkbox" name="makeTeacher"></td>
-      	<td><button name="userId" value="{{ id }}">Update</button></td>
+      	<td><input type="checkbox" name="makeAdmin" {{ hasAdmin }}></td>
+      	<td><input type="checkbox" name="makeAccountant" {{ hasAccountant }}></td>
+      	<td><input type="checkbox" name="makeClerk" {{ hasClerk }}></td>
+      	<td><input type="checkbox" name="makeTeacher" {{ hasTeacher }}></td>
+      	<td><button name="userId" value="{{ id }}">Update</button></td>      	
+		<input type="hidden" name="{{ _csrf.parameterName }}" value="{{ _csrf.token }}">
+		</form>
        </tr>
     {{/users}}
   </tbody>  
 </table>
-<input type="hidden" name="{{ _csrf.parameterName }}" value="{{ _csrf.token }}">
-</form>
 </body>
 </html>
